@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>Open-Meteo 날씨</title>
+        <style>
+            .weather-box {
+                background: rgba(0, 0, 0, 0.6);
+                /* 반투명 배경 */
+                color: white;
+                padding: 20px;
+                width: 350px;
+                border-radius: 12px;
+            }
+
+            .text {
+                font-size: 24px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>현재 위치 날씨</h1>
+        <button onclick="getWeather()">현재 위치 날씨 보기</button>
+        <script>
+            function getWeather() {
+                navigator.geolocation.getCurrentPosition(
+                    function (pos) {
+                        const lat = pos.coords.latitude;
+                        const lon = pos.coords.longitude;
+
+                        window.location.href = `/weather?lat=${lat}&lon=${lon}`;
+                    },
+                    function () {
+                        alert("위치 권한을 허용해주세요!");
+                    }
+                );
+            }
+        </script>
+        <hr>
+        {% if error %}
+            <p style="color:red;">{{ error }}</p>
+        {% endif %}
+
+        {% if weather %}
+            <h2>날씨</h2>
+            <div class="weather-box">
+                <p class="text">코드: {{ weather.weathercode }}</p>
+                <img src="{{ url_for('static', filename='images/' + weather.image) }}" width="300">
+                <p class="text">온도: {{ weather.temp }}°C</p>
+                <p class="text">풍속: {{ weather.windspeed }} m/s</p>
+            </div>
+        {% endif %}
+    </body>
+
+</html>
